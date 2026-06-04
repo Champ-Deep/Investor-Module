@@ -16,11 +16,28 @@ from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
 import asyncpg
+import httpx
 
 from cadence.config import Settings
 from cadence.crunchbase.map import investor_type_for, iso2, sectors_for, stage_for
 
 _SLUG_RE = re.compile(r"[^a-z0-9]+")
+_RAW_BASE = "https://raw.githubusercontent.com/notpeter/crunchbase-data/master"
+_DATA_FILES = ["investments.csv", "companies.csv", "acquisitions.csv"]
+
+
+def _ensure_data(data_dir: pathlib.Path) -> None:
+    """Download the Crunchbase CSVs if they aren't cached — lets the Railway container self-seed."""
+    data_dir.mkdir(parents=True, exist_ok=True)
+    for name in _DATA_FILES:
+        path = data_dir / name
+        if path.exists() and path.stat().st_size > 0:
+            continue
+        with httpx.stream("GET", f"{_RAW_BASE}/{name}", timeout=180, follow_redirects=True) as resp:
+            resp.raise_for_status()
+            with open(path, "wb") as fh:
+                for chunk in resp.iter_bytes():
+                    fh.write(chunk)
 
 
 def _slugify(value: str) -> str:
@@ -59,6 +76,7 @@ def _dec(value: str | None) -> Decimal | None:
 
 async def import_crunchbase(conn: asyncpg.Connection, settings: Settings) -> dict[str, int]:
     data_dir = pathlib.Path(settings.crunchbase_data_dir)
+    _ensure_data(data_dir)
     inv_path = data_dir / "investments.csv"
     comp_path = data_dir / "companies.csv"
     acq_path = data_dir / "acquisitions.csv"
@@ -71,13 +89,17 @@ async def import_crunchbase(conn: asyncpg.Connection, settings: Settings) -> dic
         for row in csv.DictReader(f):
             companies_meta[row["permalink"]] = row
 
-    # Pass 1: count deals per investor, select the active ones.
+    # Pass 1: count deals per investor (to select active ones) + investors per round (lead proxy).
     counts: Counter[str] = Counter()
+    round_investors: Counter[str] = Counter()
     with open(inv_path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             key = row["investor_permalink"] or row["investor_name"]
             if key:
                 counts[key] += 1
+            rp = row["funding_round_permalink"]
+            if rp:
+                round_investors[rp] += 1
     selected = {k for k, c in counts.items() if c >= min_deals}
 
     # Pass 2: build rows for the selected investors.
@@ -168,6 +190,8 @@ async def import_crunchbase(conn: asyncpg.Connection, settings: Settings) -> dic
                     "round_id": r["id"],
                     "stage": stage,
                     "date": funded,
+                    # Lead proxy: sole investor in the round led it (open data lacks lead/follow).
+                    "is_lead": round_investors.get(rp, 0) == 1,
                 }
             )
 
@@ -280,7 +304,7 @@ async def import_crunchbase(conn: asyncpg.Connection, settings: Settings) -> dic
                 d["stage"],
                 None,
                 d["is_new"],
-                False,
+                d["is_lead"],
                 d["date"],
             )
             for d in deals

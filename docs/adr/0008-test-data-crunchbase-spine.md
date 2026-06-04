@@ -13,8 +13,9 @@ directories (OpenVC alone) cannot exercise the behavioral differentiators that a
 thesis. Selected via `DATA_SOURCE=crunchbase`; the synthetic seed remains the default and the
 regression fixture.
 
-Limitations (surfaced honestly in-app): per-investor check size and lead/follow are not in the data
-(check filters off for real data; lead defaults to follow); the snapshot is 2015, so the activity
+Limitations (surfaced honestly in-app): per-investor check size is not in the data (check filters
+off for real data); lead/follow is not in the data either, so lead is approximated (the sole
+investor in a round is treated as the lead); the snapshot is 2015, so the activity
 "today" is anchored to 2015-12-31; the data is CC BY-NC — test/demo only, attributed in the UI,
 never resold; Crunchbase categories are mapped best-effort to our startup-native taxonomy; and the
 export has no people, so contacts/verification are empty for real-data firms — verified contacts
