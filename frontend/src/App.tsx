@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { type ReactNode, useEffect, useState } from "react";
+import { Link, NavLink, Route, Routes } from "react-router-dom";
 
 import FreshnessDashboard from "./features/freshness/FreshnessDashboard";
 import FirmProfile from "./features/profile/FirmProfile";
@@ -16,64 +16,80 @@ function StatusBadge() {
   if (!s) return null;
   const chip = (label: string, on: boolean) => (
     <span
-      className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
-        on ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
+      className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider md:inline-flex ${
+        on ? "bg-positive/10 text-positive" : "bg-ink/[0.05] text-faint"
       }`}
-      title={on ? "Live (API key set)" : "Offline default — add a key in .env to enable"}
     >
+      <span className={`h-1.5 w-1.5 rounded-full ${on ? "bg-positive" : "bg-faint"}`} />
       {label}
     </span>
   );
   return (
-    <div className="hidden items-center gap-1 md:flex">
+    <div className="flex items-center gap-1.5">
       {chip(
-        s.llm_parse === "openrouter" ? `LLM · ${s.llm_model ?? "openrouter"}` : "LLM · heuristic",
+        s.llm_parse === "openrouter" ? `LLM ${s.llm_model ?? ""}`.trim() : "LLM heuristic",
         s.llm_parse === "openrouter",
       )}
       {chip(
         s.data_source === "crunchbase"
-          ? "Data · Crunchbase 2015"
+          ? "Crunchbase 2015"
           : s.data_source === "lakeb2b"
-            ? "Data · LakeB2B"
-            : "Data · seed",
+            ? "LakeB2B"
+            : "Seed data",
         s.data_source !== "seed",
       )}
     </div>
   );
 }
 
+function NavItem({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <NavLink
+      to={to}
+      end={to === "/"}
+      className={({ isActive }) =>
+        `text-sm transition-colors ${isActive ? "font-medium text-ink" : "text-muted hover:text-accent"}`
+      }
+    >
+      {children}
+    </NavLink>
+  );
+}
+
 export default function App() {
   return (
-    <div className="min-h-screen">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
-          <Link to="/" className="text-lg font-semibold tracking-tight">
-            Cadence
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-10 border-b border-line bg-paper/85 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5">
+          <Link to="/" className="flex items-baseline gap-2.5">
+            <span className="font-display text-xl font-semibold tracking-tight text-ink">
+              Cadence
+            </span>
+            <span className="hidden text-[11px] uppercase tracking-[0.14em] text-faint sm:inline">
+              Champions Infometrics
+            </span>
           </Link>
-          <span className="hidden text-xs text-slate-400 sm:inline">
-            Champions Infometrics · powered by the LakeB2B Data API
-          </span>
-          <nav className="ml-auto flex items-center gap-4 text-sm">
+          <div className="ml-auto flex items-center gap-4">
             <StatusBadge />
-            <Link to="/" className="text-slate-600 hover:text-blue-600">
-              Search
-            </Link>
-            <Link to="/freshness" className="text-slate-600 hover:text-blue-600">
-              Freshness
-            </Link>
-          </nav>
+            <nav className="flex items-center gap-4">
+              <NavItem to="/">Search</NavItem>
+              <NavItem to="/freshness">Freshness</NavItem>
+            </nav>
+          </div>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">
+
+      <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-8">
         <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/firm/:slug" element={<FirmProfile />} />
           <Route path="/freshness" element={<FreshnessDashboard />} />
         </Routes>
       </main>
-      <footer className="mx-auto max-w-6xl px-4 py-8 text-center text-xs text-slate-400">
+
+      <footer className="mx-auto w-full max-w-6xl px-5 pb-10 pt-4 text-xs leading-relaxed text-faint">
         Champions Infometrics · Cadence — demo. Investor data: Crunchbase (Oct 2015 snapshot,
-        CC BY-NC) for testing only; verified-contact data is the LakeB2B layer.
+        CC&nbsp;BY-NC) for testing only; verified-contact data is the LakeB2B layer.
       </footer>
     </div>
   );

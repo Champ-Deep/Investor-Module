@@ -1,12 +1,21 @@
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-const BADGE_COLORS: Record<string, string> = {
-  slate: "bg-slate-100 text-slate-700",
-  green: "bg-green-100 text-green-700",
-  amber: "bg-amber-100 text-amber-800",
-  red: "bg-red-100 text-red-700",
-  blue: "bg-blue-100 text-blue-700",
+// Color keys are kept stable (callers pass green/amber/red/blue/slate) but restyled to the palette.
+const BADGE_TONES: Record<string, string> = {
+  slate: "bg-ink/[0.05] text-muted",
+  green: "bg-positive/10 text-positive",
+  amber: "bg-warn/10 text-warn",
+  red: "bg-negative/10 text-negative",
+  blue: "bg-accent-tint text-accent",
 };
+
+export function Label({ children }: { children: ReactNode }) {
+  return (
+    <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
+      {children}
+    </span>
+  );
+}
 
 export function Card({
   title,
@@ -18,22 +27,43 @@ export function Card({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl border border-slate-200 bg-white p-4 shadow-sm ${className}`}>
-      {title && <div className="mb-3 text-sm font-semibold text-slate-700">{title}</div>}
+    <section className={`rounded-xl border border-line bg-surface p-5 ${className}`}>
+      {title && (
+        <div className="mb-4">{typeof title === "string" ? <Label>{title}</Label> : title}</div>
+      )}
       {children}
-    </div>
+    </section>
   );
 }
 
 export function Badge({ children, color = "slate" }: { children: ReactNode; color?: string }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-        BADGE_COLORS[color] || BADGE_COLORS.slate
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+        BADGE_TONES[color] || BADGE_TONES.slate
       }`}
     >
       {children}
     </span>
+  );
+}
+
+export function Button({
+  children,
+  variant = "primary",
+  className = "",
+  ...rest
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" }) {
+  const base =
+    "inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50";
+  const tone =
+    variant === "primary"
+      ? "bg-accent text-white hover:bg-accent/90"
+      : "border border-line text-ink hover:bg-ink/[0.04]";
+  return (
+    <button className={`${base} ${tone} ${className}`} {...rest}>
+      {children}
+    </button>
   );
 }
 

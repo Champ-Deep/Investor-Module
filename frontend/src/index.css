@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light;
+/* "Quiet institutional intelligence": warm paper, near-black ink, a single Champions-orange
+   accent, an editorial serif for headings, a clean grotesk for UI, a mono for data. */
+@theme {
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-paper: #f7f6f1;
+  --color-surface: #fffdf8;
+  --color-ink: #1a1c21;
+  --color-muted: #5b5e66;
+  --color-faint: #8b8d93;
+  --color-line: #e7e2d6;
+  --color-accent: #db5a2b;
+  --color-accent-tint: #fae9df;
+  --color-positive: #1c7a51;
+  --color-warn: #a3781c;
+  --color-negative: #bd472e;
 }
 
-body {
-  margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
 }

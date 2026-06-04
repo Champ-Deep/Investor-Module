@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Card } from "../../components/ui";
+import { Button, Card, Label } from "../../components/ui";
 import { parseQuery, search } from "../../lib/api";
 import { exportFirmsCsv } from "../../lib/csv";
 import { emptyFilters, type QueryFilters, type SearchFirm } from "../../types";
@@ -16,7 +16,6 @@ function money(v: number | null): string | null {
 
 type Chip = { key: string; label: string; next: QueryFilters };
 
-// The active filters, rendered as removable chips so refining feels instant.
 function activeChips(f: QueryFilters): Chip[] {
   const chips: Chip[] = [];
   const fromArray = (field: keyof QueryFilters, prefix = "") => {
@@ -72,7 +71,6 @@ export default function SearchPage() {
     }
   }
 
-  // The magic path: parse the natural-language query into filters AND run the search in one action.
   async function runMagic() {
     if (!nl.trim()) return;
     setError("");
@@ -100,78 +98,83 @@ export default function SearchPage() {
   const chips = activeChips(filters);
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex gap-2">
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-line bg-surface p-6 sm:p-7">
+        <h1 className="max-w-2xl font-display text-2xl font-medium leading-snug tracking-tight text-ink sm:text-[28px]">
+          Find the investors ready to write your next check.
+        </h1>
+        <p className="mt-2 text-sm text-muted">
+          Describe who you're looking for — Cadence parses your intent into editable filters and
+          ranks the matches by fit and Investment Cadence.
+        </p>
+
+        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
           <input
-            className="flex-1 rounded-lg border border-slate-300 px-4 py-3 text-base outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-            placeholder="Describe the investors you want — e.g. “Series B vertical SaaS leads in the US, $15–25M, led recently”"
+            className="flex-1 rounded-xl border border-line bg-paper px-4 py-3 text-base text-ink outline-none transition placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent/10"
+            placeholder="e.g. Series B vertical SaaS leads in the US, $15–25M, led recently"
             value={nl}
             onChange={(e) => setNl(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") runMagic();
             }}
           />
-          <button
-            onClick={runMagic}
-            disabled={loading}
-            className="rounded-lg bg-blue-600 px-6 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-60"
-          >
+          <Button onClick={runMagic} disabled={loading} className="px-8 py-3 sm:py-0">
             {loading ? "Searching…" : "Search"}
-          </button>
+          </Button>
         </div>
 
         {(chips.length > 0 || explanation) && (
-          <div className="mt-3 flex flex-wrap items-center gap-1.5">
-            <span className="mr-1 text-xs font-medium text-slate-400">✨ Understood</span>
+          <div className="mt-4 flex flex-wrap items-center gap-1.5">
+            <Label>Understood</Label>
             {chips.map((c) => (
               <button
                 key={c.key}
                 onClick={() => refine(c.next)}
-                className="group inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 hover:bg-blue-100"
+                className="group inline-flex items-center gap-1 rounded-full border border-accent/20 bg-accent-tint px-2.5 py-1 text-xs font-medium text-accent transition hover:border-accent/40"
                 title="Remove this filter"
               >
                 {c.label}
-                <span className="text-blue-400 group-hover:text-blue-600">×</span>
+                <span className="text-accent/50 transition group-hover:text-accent">×</span>
               </button>
             ))}
             {chips.length === 0 && (
-              <span className="text-xs text-slate-400">no hard filters — ranking by relevance</span>
+              <span className="text-xs text-faint">no hard filters — ranking by relevance</span>
             )}
           </div>
         )}
 
         <button
           onClick={() => setShowFilters((s) => !s)}
-          className="mt-3 text-xs text-slate-400 hover:text-slate-600"
+          className="mt-5 font-mono text-[11px] uppercase tracking-wider text-faint transition hover:text-ink"
         >
-          {showFilters ? "▾ Hide filters" : "▸ Refine filters"}
+          {showFilters ? "— Hide filters" : "+ Refine filters"}
         </button>
         {showFilters && (
-          <div className="mt-3 border-t border-slate-100 pt-4">
+          <div className="mt-4 border-t border-line pt-5">
             <FilterRail key={filterKey} filters={filters} onChange={setFilters} />
-            <button
-              onClick={() => runSearch(filters)}
-              className="mt-4 w-full rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500"
-            >
+            <Button onClick={() => runSearch(filters)} className="mt-5 w-full">
               Apply filters
-            </button>
+            </Button>
           </div>
         )}
       </div>
 
-      {error && <div className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      {error && (
+        <div className="rounded-xl border border-negative/20 bg-negative/5 p-4 text-sm text-negative">
+          {error}
+        </div>
+      )}
       {loading && !results && (
         <Card>
-          <p className="text-sm text-slate-500">Searching the full universe…</p>
+          <p className="text-sm text-muted">Searching the full universe…</p>
         </Card>
       )}
       {results && <ResultsList firms={results} onExport={() => exportFirmsCsv(results)} />}
       {!results && !loading && !error && (
         <Card>
-          <p className="text-sm text-slate-500">
-            Describe the investors you're looking for and hit Search — Cadence parses your intent
-            into editable filters, then ranks the matches by fit and Investment Cadence.
+          <p className="text-sm text-muted">
+            Describe the investors you're looking for and press Search. Hard predicates filter the
+            full universe first; semantic fit only ranks within the matches.
           </p>
         </Card>
       )}
