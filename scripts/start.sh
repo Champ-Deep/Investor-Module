@@ -22,13 +22,17 @@ from cadence.config import get_settings
 
 
 async def main():
+    settings = get_settings()
+    want = settings.active_data_source
     try:
-        conn = await asyncpg.connect(dsn=get_settings().database_url)
+        conn = await asyncpg.connect(dsn=settings.database_url)
         n = await conn.fetchval("SELECT count(*) FROM firm")
+        cur = await conn.fetchval("SELECT source FROM data_meta WHERE id = 1")
         await conn.close()
     except Exception:
-        n = -1
-    print("yes" if n == 0 else "no")
+        print("yes")
+        return
+    print("yes" if (n == 0 or cur != want) else "no")
 
 
 asyncio.run(main())
@@ -36,10 +40,10 @@ PY
 )
 
 if [ "$NEED_SEED" = "yes" ]; then
-  echo "[start] empty DB — loading taxonomy + ingesting (DATA_SOURCE=${DATA_SOURCE:-seed})..."
+  echo "[start] DB empty or data source changed — (re)seeding (DATA_SOURCE=${DATA_SOURCE:-seed})..."
   python -m cadence.taxonomy.load && python -m cadence.ingest.run || echo "[start] seed failed; continuing"
 else
-  echo "[start] data already present — skipping seed"
+  echo "[start] data already matches DATA_SOURCE — skipping seed"
 fi
 
 echo "[start] launching uvicorn on 0.0.0.0:${PORT:-8000}"

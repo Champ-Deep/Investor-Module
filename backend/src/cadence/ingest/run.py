@@ -47,6 +47,11 @@ async def run() -> None:
             )
             await build_firm_embeddings(conn, get_embedder(settings))
             await compute_and_store(conn, today=today)
+            await conn.execute(
+                "INSERT INTO data_meta (id, source, ingested_at) VALUES (1, $1, now()) "
+                "ON CONFLICT (id) DO UPDATE SET source = EXCLUDED.source, ingested_at = now()",
+                source,
+            )
     finally:
         await conn.close()
 
