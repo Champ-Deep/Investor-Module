@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "note": "Canonical startup-native, multi-label sector taxonomy (ADR 0003). NOT GICS/NAICS. Groups carry leaf sectors; aliases help the query parser map natural-language phrasings to sectors. Edit this file, then run `make seed-taxonomy`.",
+  "groups": [
+    {
+      "slug": "fintech", "name": "Fintech",
+      "sectors": [
+        {"slug": "payments", "name": "Payments", "aliases": ["payments infrastructure", "payment processing"]},
+        {"slug": "banking-infrastructure", "name": "Banking Infrastructure", "aliases": ["fintech infrastructure", "embedded finance", "banking as a service", "baas"]},
+        {"slug": "lending-credit", "name": "Lending & Credit", "aliases": ["lending", "credit", "bnpl", "consumer credit"]},
+        {"slug": "insurtech", "name": "Insurtech", "aliases": ["insurance tech", "insurance technology"]},
+        {"slug": "wealthtech", "name": "Wealth & Asset Management Tech", "aliases": ["wealthtech", "wealth management", "robo advisor"]},
+        {"slug": "crypto-web3", "name": "Crypto & Web3", "aliases": ["crypto", "web3", "blockchain", "defi", "digital assets"]}
+      ]
+    },
+    {
+      "slug": "ai-data", "name": "AI & Data",
+      "sectors": [
+        {"slug": "ai-infrastructure", "name": "AI Infrastructure", "aliases": ["ai infra", "ml infrastructure", "ai compute", "gpu", "model serving", "ai infrastructure"]},
+        {"slug": "ml-platforms", "name": "ML Platforms & MLOps", "aliases": ["mlops", "ml platform", "model training"]},
+        {"slug": "applied-ai", "name": "Applied AI", "aliases": ["ai application", "ai copilot", "vertical ai", "generative ai app"]},
+        {"slug": "data-infrastructure", "name": "Data Infrastructure", "aliases": ["data infra", "data engineering", "data pipelines", "data warehouse"]}
+      ]
+    },
+    {
+      "slug": "software", "name": "Software & SaaS",
+      "sectors": [
+        {"slug": "vertical-saas", "name": "Vertical SaaS", "aliases": ["vertical software", "industry-specific saas", "vertical saas"]},
+        {"slug": "horizontal-saas", "name": "Horizontal SaaS", "aliases": ["horizontal software", "b2b saas"]},
+        {"slug": "dev-tools", "name": "Developer Tools", "aliases": ["devtools", "developer tooling", "api tools"]},
+        {"slug": "no-code-low-code", "name": "No-Code / Low-Code", "aliases": ["nocode", "lowcode", "no code", "low code"]},
+        {"slug": "collaboration-productivity", "name": "Collaboration & Productivity", "aliases": ["productivity", "collaboration software"]}
+      ]
+    },
+    {
+      "slug": "healthcare", "name": "Healthcare & Life Sciences",
+      "sectors": [
+        {"slug": "digital-health", "name": "Digital Health", "aliases": ["healthtech", "health tech", "digital health", "telehealth", "telemedicine"]},
+        {"slug": "biotech", "name": "Biotech", "aliases": ["biotechnology", "therapeutics", "drug discovery"]},
+        {"slug": "medical-devices", "name": "Medical Devices", "aliases": ["medtech", "medical hardware"]},
+        {"slug": "healthcare-services", "name": "Healthcare Services", "aliases": ["healthcare services", "health services", "care delivery", "provider services"]},
+        {"slug": "diagnostics", "name": "Diagnostics", "aliases": ["diagnostics", "lab testing"]},
+        {"slug": "mental-health", "name": "Mental Health", "aliases": ["behavioral health", "mental wellness"]}
+      ]
+    },
+    {
+      "slug": "climate", "name": "Climate & Energy",
+      "sectors": [
+        {"slug": "climate-tech", "name": "Climate Tech", "aliases": ["climatetech", "cleantech", "climate", "decarbonization"]},
+        {"slug": "clean-energy", "name": "Clean Energy", "aliases": ["renewables", "solar", "wind", "renewable energy"]},
+        {"slug": "energy-storage", "name": "Energy Storage", "aliases": ["batteries", "battery storage", "grid storage"]},
+        {"slug": "carbon-management", "name": "Carbon Management", "aliases": ["carbon capture", "carbon removal", "ccus", "carbon credits"]},
+        {"slug": "agtech-foodtech", "name": "AgTech & FoodTech", "aliases": ["agtech", "foodtech", "agriculture tech", "alternative protein"]}
+      ]
+    },
+    {
+      "slug": "consumer", "name": "Commerce & Consumer",
+      "sectors": [
+        {"slug": "marketplaces", "name": "Marketplaces", "aliases": ["marketplace", "two-sided marketplace"]},
+        {"slug": "ecommerce-enablement", "name": "E-commerce Enablement", "aliases": ["ecommerce", "e-commerce", "commerce infrastructure"]},
+        {"slug": "consumer-apps", "name": "Consumer Apps", "aliases": ["consumer", "consumer social", "consumer mobile"]},
+        {"slug": "d2c-brands", "name": "D2C Brands", "aliases": ["dtc", "direct to consumer", "consumer brands"]},
+        {"slug": "gaming", "name": "Gaming", "aliases": ["games", "game studios", "interactive entertainment"]},
+        {"slug": "creator-economy", "name": "Creator Economy", "aliases": ["creators", "creator tools", "influencer"]}
+      ]
+    },
+    {
+      "slug": "enterprise-security", "name": "Enterprise & Security",
+      "sectors": [
+        {"slug": "cybersecurity", "name": "Cybersecurity", "aliases": ["security", "cyber", "infosec", "cyber security"]},
+        {"slug": "cloud-infrastructure", "name": "Cloud Infrastructure", "aliases": ["cloud", "cloud infra", "infrastructure software"]},
+        {"slug": "devops-observability", "name": "DevOps & Observability", "aliases": ["devops", "observability", "monitoring", "sre"]},
+        {"slug": "identity-access", "name": "Identity & Access", "aliases": ["identity", "iam", "authentication", "access management"]},
+        {"slug": "martech-salestech", "name": "MarTech & SalesTech", "aliases": ["martech", "salestech", "marketing tech", "sales tech", "go-to-market software"]}
+      ]
+    },
+    {
+      "slug": "industrials", "name": "Industrials & Hard Tech",
+      "sectors": [
+        {"slug": "robotics-automation", "name": "Robotics & Automation", "aliases": ["robotics", "automation", "industrial robots"]},
+        {"slug": "manufacturing-tech", "name": "Manufacturing Tech", "aliases": ["manufacturing", "industrial tech", "factory automation"]},
+        {"slug": "supply-chain-logistics", "name": "Supply Chain & Logistics", "aliases": ["logistics", "supply chain", "freight tech"]},
+        {"slug": "space-tech", "name": "Space Tech", "aliases": ["space", "aerospace", "satellites"]},
+        {"slug": "defense-tech", "name": "Defense Tech", "aliases": ["defense", "national security tech", "dual-use"]}
+      ]
+    },
+    {
+      "slug": "mobility-transport", "name": "Mobility & Transport",
+      "sectors": [
+        {"slug": "mobility", "name": "Mobility", "aliases": ["transportation", "micromobility", "ride-sharing"]},
+        {"slug": "autonomous-vehicles", "name": "Autonomous Vehicles", "aliases": ["av", "self-driving", "autonomy"]},
+        {"slug": "ev-infrastructure", "name": "EV Infrastructure", "aliases": ["ev", "electric vehicles", "charging"]}
+      ]
+    },
+    {
+      "slug": "realestate", "name": "Real Estate & Built World",
+      "sectors": [
+        {"slug": "proptech", "name": "PropTech", "aliases": ["proptech", "real estate tech", "property tech"]},
+        {"slug": "construction-tech", "name": "Construction Tech", "aliases": ["contech", "construction", "built world"]}
+      ]
+    },
+    {
+      "slug": "work-edu", "name": "Work & Education",
+      "sectors": [
+        {"slug": "edtech", "name": "EdTech", "aliases": ["education tech", "edtech", "learning"]},
+        {"slug": "future-of-work", "name": "Future of Work", "aliases": ["future of work", "remote work", "workforce"]},
+        {"slug": "hr-tech", "name": "HR Tech", "aliases": ["hrtech", "people ops", "talent software", "hr tech"]}
+      ]
+    }
+  ]
+}

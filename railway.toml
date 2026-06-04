@@ -1,0 +1,13 @@
+# Railway config (root). Single service: FastAPI serves the API under /api + the built SPA at /.
+# startCommand runs start.sh (waits for DB, migrates, seeds-if-empty, then execs uvicorn on $PORT).
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "sh /app/start.sh"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

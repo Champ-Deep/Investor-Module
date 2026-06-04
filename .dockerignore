@@ -1,0 +1,31 @@
+# Keep frontend/ (the image builds it in stage 1); drop everything rebuilt or local-only.
+.git
+.gitignore
+.claude
+.DS_Store
+*.log
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# python local
+**/.venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/*.egg-info
+
+# node / build outputs (rebuilt in-image)
+**/node_modules
+**/dist
+frontend/.vite
+**/.data
+
+# docs / local infra not needed in the image
+docs
+docker-compose.yml

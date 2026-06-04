@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "note": "Controlled, filterable thesis dimensions (the only thesis data permitted to drive filtering). The read-only Thesis narrative is separate and never a filter input.",
+  "tags": [
+    {"slug": "b2b", "name": "B2B", "dimension": "business_model"},
+    {"slug": "b2c", "name": "B2C", "dimension": "business_model"},
+    {"slug": "b2b2c", "name": "B2B2C", "dimension": "business_model"},
+    {"slug": "marketplace-model", "name": "Marketplace", "dimension": "business_model"},
+    {"slug": "plg", "name": "Product-Led Growth", "dimension": "go_to_market"},
+    {"slug": "sales-led", "name": "Sales-Led", "dimension": "go_to_market"},
+    {"slug": "minority-stake", "name": "Minority Stake", "dimension": "ownership_target"},
+    {"slug": "majority-control", "name": "Majority / Control", "dimension": "ownership_target"},
+    {"slug": "full-buyout", "name": "Full Buyout", "dimension": "ownership_target"},
+    {"slug": "deep-tech-risk", "name": "Deep Tech Risk", "dimension": "technical_risk"},
+    {"slug": "low-tech-risk", "name": "Low Tech Risk", "dimension": "technical_risk"},
+    {"slug": "asset-light", "name": "Asset-Light", "dimension": "capital_intensity"},
+    {"slug": "capital-intensive", "name": "Capital-Intensive", "dimension": "capital_intensity"}
+  ]
+}

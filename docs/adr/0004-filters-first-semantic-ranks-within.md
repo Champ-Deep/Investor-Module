@@ -1,0 +1,7 @@
+# Hard filters run first over the full universe; semantic similarity ranks within
+
+The platform is a structured search engine that natural language compiles into, not a semantic retrieval engine. Query execution is: (1) hard predicates filter the entire dataset, guaranteeing exact and complete recall; (2) semantic similarity then ranks the matched set and resolves soft sector/thesis language. The parsed filters are shown to the user and are editable. Embedding similarity is allowed only for ranking within the matched set and for the explicit Look-Alike feature, never to retrieve a candidate set ahead of filtering.
+
+Why: the sell-side and placement-agent personas build exhaustive lists (50 to 300 names) where a silently missed qualifying record is a reputation-ending error for the user. A semantic-first ("retrieve then post-filter") order drops qualifying records whose text does not embed near the query phrasing, destroying recall. Filters-first preserves recall and keeps hard numeric and enum bounds exact, while still delivering natural-language input and similarity-based ranking. A future "two modes" split (exact list-build vs loose explore) is the sanctioned way to reintroduce semantic-first, scoped to discovery only.
+
+Considered options: (1) filters-first, semantic ranks within (chosen); (2) two modes; (3) semantic-first with structured post-filters (rejected for recall failure). Status: accepted; reverses the initial semantic-first instinct after the recall risk was surfaced.
