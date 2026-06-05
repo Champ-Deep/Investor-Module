@@ -13,6 +13,7 @@ import asyncpg
 
 from cadence.config import Settings
 from cadence.embeddings.embedder import get_embedder, to_pgvector
+from cadence.geo import normalize_countries
 from cadence.models.query import QueryFilters, SearchResultFirm
 
 DAYS_PER_MONTH = 30.44
@@ -45,6 +46,11 @@ def build_search_sql(
     p = _Params()
     where: list[str] = []
 
+    # Country names/codes -> ISO-2 (matches the stored values; the LLM often emits full names).
+    hq = normalize_countries(filters.hq_countries)
+    mandate = normalize_countries(filters.mandate_geos)
+    lp_base = normalize_countries(filters.lp_base_geos)
+
     if filters.investor_types:
         where.append(f"f.investor_type = ANY({p.add(filters.investor_types)})")
     for role in filters.capital_roles:
@@ -52,17 +58,17 @@ def build_search_sql(
             f"EXISTS (SELECT 1 FROM capital_role cr "
             f"WHERE cr.firm_id = f.id AND cr.role = {p.add(role)})"
         )
-    if filters.hq_countries:
-        where.append(f"f.hq_country = ANY({p.add(filters.hq_countries)})")
-    if filters.mandate_geos:
+    if hq:
+        where.append(f"f.hq_country = ANY({p.add(hq)})")
+    if mandate:
         where.append(
             f"EXISTS (SELECT 1 FROM firm_geo g WHERE g.firm_id = f.id "
-            f"AND g.kind = 'mandate' AND g.value = ANY({p.add(filters.mandate_geos)}))"
+            f"AND g.kind = 'mandate' AND g.value = ANY({p.add(mandate)}))"
         )
-    if filters.lp_base_geos:
+    if lp_base:
         where.append(
             f"EXISTS (SELECT 1 FROM firm_geo g WHERE g.firm_id = f.id "
-            f"AND g.kind = 'lp_base' AND g.value = ANY({p.add(filters.lp_base_geos)}))"
+            f"AND g.kind = 'lp_base' AND g.value = ANY({p.add(lp_base)}))"
         )
 
     # Behavioral deal predicate: stage + check + lead + recency evaluated on the SAME deal, so

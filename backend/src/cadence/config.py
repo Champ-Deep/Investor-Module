@@ -2,6 +2,10 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Bump when the seed/import logic changes so deployed environments re-seed on next boot
+# (start.sh compares this against the stored data_meta marker).
+SEED_VERSION = "2"
+
 
 class Settings(BaseSettings):
     """All runtime config. Drop the two keys below into a .env and the app lights up the live

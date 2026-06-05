@@ -18,12 +18,12 @@ done
 NEED_SEED=$(python - <<'PY'
 import asyncio
 import asyncpg
-from cadence.config import get_settings
+from cadence.config import SEED_VERSION, get_settings
 
 
 async def main():
     settings = get_settings()
-    want = settings.active_data_source
+    want = f"{settings.active_data_source}@{SEED_VERSION}"
     try:
         conn = await asyncpg.connect(dsn=settings.database_url)
         n = await conn.fetchval("SELECT count(*) FROM firm")

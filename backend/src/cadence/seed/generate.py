@@ -8,7 +8,7 @@ import asyncio
 import asyncpg
 
 from cadence.cadence.compute import compute_and_store
-from cadence.config import get_settings
+from cadence.config import SEED_VERSION, get_settings
 from cadence.datasource.seed_source import SeedDataSource, SeedDealSource
 from cadence.embeddings.build import build_firm_embeddings
 from cadence.embeddings.embedder import get_embedder
@@ -32,8 +32,9 @@ async def run() -> None:
             await build_firm_embeddings(conn, get_embedder(settings))
             await compute_and_store(conn, today=TODAY)
             await conn.execute(
-                "INSERT INTO data_meta (id, source, ingested_at) VALUES (1, 'seed', now()) "
-                "ON CONFLICT (id) DO UPDATE SET source = EXCLUDED.source, ingested_at = now()"
+                "INSERT INTO data_meta (id, source, ingested_at) VALUES (1, $1, now()) "
+                "ON CONFLICT (id) DO UPDATE SET source = EXCLUDED.source, ingested_at = now()",
+                f"seed@{SEED_VERSION}",
             )
     finally:
         await conn.close()

@@ -12,7 +12,7 @@ from datetime import date
 import asyncpg
 
 from cadence.cadence.compute import compute_and_store
-from cadence.config import get_settings
+from cadence.config import SEED_VERSION, get_settings
 from cadence.embeddings.build import build_firm_embeddings
 from cadence.embeddings.embedder import get_embedder
 from cadence.ingest.derive import recompute_all
@@ -50,7 +50,7 @@ async def run() -> None:
             await conn.execute(
                 "INSERT INTO data_meta (id, source, ingested_at) VALUES (1, $1, now()) "
                 "ON CONFLICT (id) DO UPDATE SET source = EXCLUDED.source, ingested_at = now()",
-                source,
+                f"{source}@{SEED_VERSION}",
             )
     finally:
         await conn.close()
