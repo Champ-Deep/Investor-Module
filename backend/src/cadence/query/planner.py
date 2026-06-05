@@ -231,6 +231,7 @@ def build_search_sql(
     sql = (
         "SELECT f.id::text, f.slug, f.name, f.investor_type, f.hq_country, "
         "COALESCE(fa.is_active, false) AS is_active, fc.score AS cadence_score, "
+        "fa.last_deal_at, "
         f"{rank_expr} AS rank_score "
         "FROM firm f "
         "LEFT JOIN firm_activity fa ON fa.firm_id = f.id "
@@ -265,6 +266,7 @@ async def execute_search(
             is_active=r["is_active"],
             cadence_score=r["cadence_score"],
             rank_score=float(r["rank_score"]) if r["rank_score"] is not None else None,
+            last_deal_at=r["last_deal_at"],
         )
         for r in rows
     ]

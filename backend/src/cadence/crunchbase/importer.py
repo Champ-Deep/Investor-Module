@@ -192,7 +192,7 @@ async def import_crunchbase(conn: asyncpg.Connection, settings: Settings) -> dic
                     "date": funded,
                     # Lead proxy: sole investor in the round led it (open data lacks lead/follow).
                     "is_lead": round_investors.get(rp, 0) == 1,
-                    # Check proxy: round size pro-rated by # investors (no per-investor checks in data).
+                    # Check proxy: round size pro-rated by # investors (no per-investor data).
                     "check_amount": (
                         r["size"] / round_investors[rp]
                         if r["size"] is not None and round_investors.get(rp)

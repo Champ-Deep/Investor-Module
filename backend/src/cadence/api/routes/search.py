@@ -53,9 +53,29 @@ async def search(filters: QueryFilters, request: Request) -> dict:
                 ids,
             )
             deal_counts = {r["fid"]: r["n"] for r in count_rows}
+            cs_rows = await conn.fetch(
+                "SELECT fcs.firm_id::text AS fid, st.slug, fcs.median_amount "
+                "FROM firm_check_size fcs JOIN stage st ON st.slug = fcs.stage_slug "
+                "WHERE fcs.firm_id::text = ANY($1::text[]) ORDER BY st.sort_order",
+                ids,
+            )
+            # Typical-check range = span of the firm's per-stage MEDIAN checks. Medians are robust
+            # to the pro-rated round-size proxy's outliers (raw min/max produced noise like $2).
+            stages_by: dict[str, list[str]] = {}
+            check_lo: dict[str, float] = {}
+            check_hi: dict[str, float] = {}
+            for r in cs_rows:
+                stages_by.setdefault(r["fid"], []).append(r["slug"])
+                if r["median_amount"] is not None:
+                    v = float(r["median_amount"])
+                    check_lo[r["fid"]] = min(check_lo.get(r["fid"], v), v)
+                    check_hi[r["fid"]] = max(check_hi.get(r["fid"], v), v)
             for f in firms:
                 f["top_sectors"] = top_sectors.get(f["id"], [])
                 f["deal_count"] = deal_counts.get(f["id"], 0)
+                f["stages"] = stages_by.get(f["id"], [])
+                f["check_lo"] = check_lo.get(f["id"])
+                f["check_hi"] = check_hi.get(f["id"])
     return {"count": len(firms), "firms": firms}
 
 

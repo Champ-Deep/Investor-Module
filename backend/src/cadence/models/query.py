@@ -7,6 +7,8 @@ is carried as soft signals (soft_sectors / soft_text) used only to RANK within t
 
 from __future__ import annotations
 
+from datetime import date
+
 from pydantic import BaseModel
 
 
@@ -73,6 +75,7 @@ class SearchResultFirm(BaseModel):
     is_active: bool = False
     cadence_score: int | None = None
     rank_score: float | None = None
+    last_deal_at: date | None = None
 
 
 class ParsedQuery(BaseModel):

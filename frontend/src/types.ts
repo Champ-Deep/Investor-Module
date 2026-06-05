@@ -59,8 +59,12 @@ export interface SearchFirm {
   is_active: boolean;
   cadence_score: number | null;
   rank_score: number | null;
+  last_deal_at?: string | null;
   top_sectors?: string[];
   deal_count?: number;
+  stages?: string[];
+  check_lo?: number | null;
+  check_hi?: number | null;
 }
 
 export interface FirmDeal {

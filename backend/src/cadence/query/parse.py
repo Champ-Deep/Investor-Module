@@ -21,7 +21,7 @@ _SYSTEM = (
     "late_stage, public. Investor types include vc, angel, pe, growth_equity, family_office, "
     "corporate_venture, pension, endowment, fund_of_funds, sovereign_wealth, solo_gp. Capital "
     "roles: direct_investor, lp_allocator, strategic_acquirer. Amounts are USD (e.g. 15000000). "
-    "Countries (hq_countries, mandate_geos, lp_base_geos) use 2-letter ISO codes: US, GB, DE, IN, IL."
+    "Countries (hq_countries, mandate_geos, lp_base_geos) use 2-letter ISO codes: US, GB, DE, IN."
 )
 
 _STAGES = {
